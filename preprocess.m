@@ -36,6 +36,11 @@ function outSentence = preprocess( inSentence, language )
   % parentheses, dashes between parentheses, mathematical operators,
   % and quotation marks.
 
+  % Punctuation
+  outSentence = regexprep(outSentence, '([*]?)([.]+) (SENTEND)', '$1 $2 $3');
+  outSentence = regexprep(outSentence, '([*]?)([?]+) (SENTEND)', '$1 $2 $3');
+  outSentence = regexprep(outSentence, '([*]?)([!]+) (SENTEND)', '$1 $2 $3');
+
   switch language
    case 'e'
     % TODO: your code here
