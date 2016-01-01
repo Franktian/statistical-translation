@@ -32,6 +32,10 @@ function outSentence = preprocess( inSentence, language )
   % TODO: your code here
   %    e.g., outSentence = regexprep( outSentence, 'TODO', 'TODO');
 
+  % Separate sentence-final punctuation, commas, colons and semicolons,
+  % parentheses, dashes between parentheses, mathematical operators,
+  % and quotation marks.
+
   switch language
    case 'e'
     % TODO: your code here
