@@ -35,15 +35,20 @@ function outSentence = preprocess( inSentence, language )
   % Separate sentence-final punctuation, commas, colons and semicolons,
   % parentheses, dashes between parentheses, mathematical operators,
   % and quotation marks.
+  replace = '$1 $2 $3';
+  sen_final_punc = '([*]?)([?.!]+) (SENTEND)';
+  sen_punc = '([*]?)([;=-+\(\)<>,;:])([*]?)';
+  dashes = '([*]?\([*]?)(-)([*]?\)[*]?)';
 
-  % Punctuation
-  outSentence = regexprep(outSentence, '([*]?)([.]+) (SENTEND)', '$1 $2 $3');
-  outSentence = regexprep(outSentence, '([*]?)([?]+) (SENTEND)', '$1 $2 $3');
-  outSentence = regexprep(outSentence, '([*]?)([!]+) (SENTEND)', '$1 $2 $3');
+  outSentence = regexprep(outSentence, sen_final_punc, replace);
+  outSentence = regexprep(outSentence, sen_punc, replace);
+  outSentence = regexprep(outSentence, dashes, replace);
+
 
   switch language
    case 'e'
-    % TODO: your code here
+    e_replace = '$1 $2$3';
+    outSentence = regexprep(outSentence, '([*]?)(''|''s|''ll|.''.*)( [*]?)', e_replace);
 
    case 'f'
     % TODO: your code here
