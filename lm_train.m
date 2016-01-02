@@ -48,9 +48,32 @@ for iFile=1:length(DD)
     processedLine =  preprocess(lines{l}, language);
     words = strsplit(' ', processedLine );
     
-    % TODO: THE STUDENT IMPLEMENTS THE FOLLOWING
+    for i=1:lengh(words) - 1
+        % Unigram
+        if isfield(LM.uni, words{i})
+            LM.uni.(words{i}) = LM.uni.(words{i}) + 1;
+        else
+            LM.uni.(words{i}) = 1;
+        end
 
-    % TODO: THE STUDENT IMPLEMENTED THE PRECEDING
+        % Bigram
+        if ~isfield(LM.bi, words{i})
+            LM.bi.(words{i}) = struct();
+        end
+        if isfield(LM.bi.(words{i}), words{i + 1})
+            LM.bi.(words{i}).(words{i+1}) = LM.bi.(words{i}).(words{i+1}) + 1;
+        else
+            LM.bi.(words{i}).(words{i+1}) = 1;
+        end
+    end
+
+    % Final word
+    if isfield(LM.uni, words{end})
+        LM.uni.(words{end}) = LM.uni.(words{end}) + 1;
+    else
+        LM.uni.(words{end}) = 1;
+    end
+
   end
 end
 
