@@ -31,10 +31,6 @@ function outSentence = preprocess( inSentence, language )
   % perform language-agnostic changes
   % TODO: your code here
   %    e.g., outSentence = regexprep( outSentence, 'TODO', 'TODO');
-
-  % Separate sentence-final punctuation, commas, colons and semicolons,
-  % parentheses, dashes between parentheses, mathematical operators,
-  % and quotation marks.
   outSentence = separatePunctuation(outSentence);
 
 
@@ -44,17 +40,7 @@ function outSentence = preprocess( inSentence, language )
     outSentence = regexprep(outSentence, '([*]?)(''|''s|''ll|.''.*)( [*]?)', e_replace);
 
    case 'f'
-    f_replace = '$1$2 $3';
-    % Singular definite article
-    outSentence = regexprep(outSentence, '([*]? )(l'')([^ ][*]?)', f_replace);
-    % Single-consonant words
-    outSentence = regexprep(outSentence, '([*]? )([cdjtmns]'')([^ ][*]?)', f_replace);
-    % que
-    outSentence = regexprep(outSentence, '([*]? )(qu'')([^ ][*]?)', f_replace);
-    % Conjunctions - puisque and lorsque
-    outSentence = regexprep(outSentence, '([*]? )(puisqu''|lorsqu'')(on|il)', f_replace);
-    % d'abord, d'accord, d'ailleurs, d'habitude
-    outSentence = regexprep(outSentence, '(d'') (abord|accord|ailleurs||habitude)', '$1$2');
+    outSentence = updateFrench(outSentence);
   end
 
   % change unpleasant characters to codes that can be keys in dictionaries

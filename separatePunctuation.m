@@ -1,4 +1,8 @@
-function out = separatePunctuation ( in )
+function out = separatePunctuation(in)
+  % Separate sentence-final punctuation, commas, colons and semicolons,
+  % parentheses, dashes between parentheses, mathematical operators,
+  % and quotation marks.
+
   replace = '$1 $2 $3';
   sen_final_punc = '([*]?)([?.!]+) (SENTEND)';
   sen_punc = '([*]?)([;=-+\(\)<>,;:])([*]?)';
