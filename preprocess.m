@@ -35,14 +35,7 @@ function outSentence = preprocess( inSentence, language )
   % Separate sentence-final punctuation, commas, colons and semicolons,
   % parentheses, dashes between parentheses, mathematical operators,
   % and quotation marks.
-  replace = '$1 $2 $3';
-  sen_final_punc = '([*]?)([?.!]+) (SENTEND)';
-  sen_punc = '([*]?)([;=-+\(\)<>,;:])([*]?)';
-  dashes = '([*]?\([*]?)(-)([*]?\)[*]?)';
-
-  outSentence = regexprep(outSentence, sen_final_punc, replace);
-  outSentence = regexprep(outSentence, sen_punc, replace);
-  outSentence = regexprep(outSentence, dashes, replace);
+  outSentence = separatePunctuation(outSentence);
 
 
   switch language
