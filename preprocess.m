@@ -37,8 +37,12 @@ function outSentence = preprocess( inSentence, language )
   switch language
    case 'e'
     e_replace = '$1 $2$3';
-    outSentence = regexprep(outSentence, '([*]?)(''|''s|''ll|.''.*)( [*]?)', e_replace);
-
+    %outSentence = regexprep(outSentence, '(.*?[^ ])(''|''s|''ll|.''.*)( .*?)', e_replace);
+    outSentence = regexprep(outSentence, '(.*?[^ ])(''s|''|''ll)( .*?)', e_replace);
+    %outSentence = regexprep(outSentence, '(.*?[^ ])('')( .*?)', '$1 $2$3');
+    %outSentence = regexprep(outSentence, '(.*?[^ ])(''s)( .*?)', '$1 $2$3');
+    %utSentence = regexprep(outSentence, '(.*?[^ ])(''ll)( .*?)', '$1 $2$3');
+    %outSentence = regexprep(outSentence, '(.*?[^ ])(.''.*)( .*?)', '$1 $2$3');
    case 'f'
     outSentence = updateFrench(outSentence);
   end
@@ -46,3 +50,15 @@ function outSentence = preprocess( inSentence, language )
   % change unpleasant characters to codes that can be keys in dictionaries
   outSentence = convertSymbols( outSentence );
 
+function out = separatePunctuation(in)
+  % Separate sentence-final punctuation, commas, colons and semicolons,
+  % parentheses, dashes between parentheses, mathematical operators,
+  % and quotation marks.
+  replace = '$1 $2 $3';
+  sen_final_punc = '([*]?)([?.!]+) (SENTEND)';
+  sen_punc = '([*]?)([;=-+\(\)<>,;:])([*]?)';
+  dashes = '([*]?\([*]?)(-)([*]?\)[*]?)';
+
+  out = regexprep(in, sen_final_punc, replace);
+  out = regexprep(out, sen_punc, replace);
+  out = regexprep(out, dashes, replace);
