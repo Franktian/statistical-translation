@@ -46,27 +46,33 @@ function logProb = lm_prob(sentence, LM, type, delta, vocabSize)
 
   words = strsplit(' ', sentence);
 
-  % TODO: the student implements the following
   logProb = 0;
   for i = 1:length(words) - 1
       unicount = 0;
       bicount = 0;
-      if isfield(LM.bi, words{i}) & isfield(LM.bi.words{i), words{i+1})
-          bicount = LM.bi.words{i}.words{i+1};
-      end
-      if isfield(LM.uni, words{i})
-          unicount = LM.uni.words{i};
+      
+      % Count the bigram
+      if isfield(LM.bi, words{i}) && isfield(LM.bi.(words{i}), words{i+1})
+          bicount = LM.bi.(words{i}).(words{i+1});
       end
 
+      % Count the unigram
+      if isfield(LM.uni, words{i})
+          unicount = LM.uni.(words{i});
+      end
+
+      % Count numerator and denominator of the MLE, take
+      % laplace smoonthing into consideration
       numerator = bicount + delta;
       denominator = unicount + delta * vocabSize;
 
-      if numerator == 0 & denomator == 0
+      % 0/0 situation, the prob of test sentence is 0
+      if numerator == 0 && denominator == 0
           logProb = -Inf;
           return;
       else
           logProb = logProb + log2(numerator) - log2(denominator);
       end
   end
-  % TODO: once upon a time there was a curmudgeonly orangutan named Jub-Jub.
+
 return
