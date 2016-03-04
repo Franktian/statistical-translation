@@ -28,21 +28,14 @@ function outSentence = preprocess( inSentence, language )
   % initialize outSentence
   outSentence = inSentence;
 
-  % perform language-agnostic changes
-  % TODO: your code here
-  %    e.g., outSentence = regexprep( outSentence, 'TODO', 'TODO');
+  % Separate punctuations
   outSentence = separatePunctuation(outSentence);
-
 
   switch language
    case 'e'
     e_replace = '$1 $2$3';
-    %outSentence = regexprep(outSentence, '(.*?[^ ])(''|''s|''ll|.''.*)( .*?)', e_replace);
-    outSentence = regexprep(outSentence, '(.*?[^ ])(''s|''|''ll)( .*?)', e_replace);
-    %outSentence = regexprep(outSentence, '(.*?[^ ])('')( .*?)', '$1 $2$3');
-    %outSentence = regexprep(outSentence, '(.*?[^ ])(''s)( .*?)', '$1 $2$3');
-    %utSentence = regexprep(outSentence, '(.*?[^ ])(''ll)( .*?)', '$1 $2$3');
-    %outSentence = regexprep(outSentence, '(.*?[^ ])(.''.*)( .*?)', '$1 $2$3');
+    % Separating possessives and clitics, same rules as A1
+    outSentence = regexprep(outSentence, '(.*?[^ ])(''|''s|''m|''ll|''ve|''re)( .*?)', e_replace);
    case 'f'
     outSentence = updateFrench(outSentence);
   end
