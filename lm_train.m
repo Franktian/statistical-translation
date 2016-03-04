@@ -44,39 +44,42 @@ for iFile=1:length(DD)
   lines = textread([dataDir, filesep, DD(iFile).name], '%s','delimiter','\n');
 
   for l=1:length(lines)
-
+    disp(lines{l});
     processedLine =  preprocess(lines{l}, language);
     words = strsplit(' ', processedLine );
-
-    disp('process line');
+    
+    % Remove sentence mark
+    words(1) = [];
+    words(end) = [];
 
     for i=1:length(words) - 1
         % Unigram
+        disp(words);
         if isfield(LM.uni, words{i})
-            LM.uni.words{i} = LM.uni.words{i} + 1;
+            LM.uni.(words{i}) = LM.uni.(words{i}) + 1;
         else
-            LM.uni.words{i} = 1;
+            LM.uni.(words{i}) = 1;
         end
 
         % Bigram
         if ~isfield(LM.bi, words{i})
-            LM.bi.words{i} = struct();
+            LM.bi.(words{i}) = struct();
         end
-        if isfield(LM.bi.words{i}, words{i + 1})
-            LM.bi.words{i}.words{i+1} = LM.bi.words{i}.words{i+1} + 1;
+        if isfield(LM.bi.(words{i}), words{i + 1})
+            LM.bi.(words{i}).(words{i+1}) = LM.bi.(words{i}).(words{i+1}) + 1;
         else
-            LM.bi.words{i}.words{i+1} = 1;
+            LM.bi.(words{i}).(words{i+1}) = 1;
         end
     end
 
     % Final word
     if isfield(LM.uni, words{end})
-        LM.uni.words{end} = LM.uni.words{end} + 1;
+        LM.uni.(words{end}) = LM.uni.(words{end}) + 1;
     else
-        LM.uni.words{end} = 1;
+        LM.uni.(words{end}) = 1;
     end
 
   end
 end
 
-save( fn_LM, 'LM', '-mat'); 
+save( fn_LM, 'LM', '-mat');
