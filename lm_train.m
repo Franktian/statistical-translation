@@ -47,7 +47,7 @@ for iFile=1:length(DD)
     disp(lines{l});
     processedLine =  preprocess(lines{l}, language);
     words = strsplit(' ', processedLine );
-    
+
     % Remove sentence mark
     words(1) = [];
     words(end) = [];
