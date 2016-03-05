@@ -44,7 +44,7 @@ function logProb = lm_prob(sentence, LM, type, delta, vocabSize)
     return;
   end
 
-  sentence = lower( sentence );
+  % sentence = lower( sentence );
 
   words = strsplit(' ', sentence);
 
