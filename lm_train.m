@@ -48,13 +48,8 @@ for iFile=1:length(DD)
     processedLine =  preprocess(lines{l}, language);
     words = strsplit(' ', processedLine );
 
-    % Remove sentence mark
-    words(1) = [];
-    words(end) = [];
-
     for i=1:length(words) - 1
         % Unigram
-        disp(words);
         if isfield(LM.uni, words{i})
             LM.uni.(words{i}) = LM.uni.(words{i}) + 1;
         else
