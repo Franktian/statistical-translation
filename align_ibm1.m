@@ -72,10 +72,24 @@ function [eng, fre] = read_hansard(mydir, numSentences)
 %
 %         eng{i} = strsplit(' ', preprocess(english_sentence, 'e'));
 %
-  %eng = {};
-  %fre = {};
+  eng = {};
+  fre = {};
 
   % TODO: your code goes here.
+  DE = dir( [ mydir, filesep, '*', 'e'] );
+  DF = dir( [ mydir, filesep, '*', 'f'] );
+  
+  for iFile=1:length(DE)
+    englines = textread([mydir, filesep, DE(iFile).name], '%s','delimiter','\n');
+    frelines = textread([mydir, filesep, DF(iFile).name], '%s','delimiter','\n');
+    for l=1:length(englines)
+        eng{l} = strsplit(' ', preprocess(englines{l}, 'e'));
+        fre{l} = strsplit(' ', preprocess(frelines{l}, 'e'));
+        if l > numSentences
+            return
+        end
+    end
+  end
 
 end
 
