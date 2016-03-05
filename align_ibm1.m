@@ -100,8 +100,27 @@ function AM = initialize(eng, fre)
 % Only set non-zero probabilities where word pairs appear in corresponding sentences.
 %
     AM = {}; % AM.(english_word).(foreign_word)
-
-    % TODO: your code goes here
+    for l=1:length(eng)
+        for en = 2:length(eng{l}) -1
+            for fr = 2:length(fre{l}) -1
+                if ~isfield(AM, eng{l}{en})
+                    AM.(eng{l}{en}) = struct();
+                end
+                if ~isfield(AM.(eng{l}{en}), fre{l}{fr})
+                    AM.(eng{l}{en}).(fre{l}{fr}) = 1;
+                end
+            end
+        end
+    end
+    
+    en_words = fieldnames(AM);
+    for en = 1:length(en_words)
+        fr_words = fieldnames(AM.(en_words{en}));
+        for fr = 1:length(fr_words)
+            AM.(en_words{en}).(fr_words{fr}) = 1 / length(fields(AM.(en_words{en})));
+        end
+    end
+    
 
 end
 
