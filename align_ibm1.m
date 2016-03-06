@@ -103,19 +103,18 @@ function AM = initialize(eng, fre)
 % Only set non-zero probabilities where word pairs appear in corresponding sentences.
 %
     AM = {}; % AM.(english_word).(foreign_word)
+
+    % For every english word in a sentence align the french word in the
+    % corresponding sentence
     for l=1:length(eng)
         for en = 2:length(eng{l}) -1
             for fr = 2:length(fre{l}) -1
-                if ~isfield(AM, eng{l}{en})
-                    AM.(eng{l}{en}) = struct();
-                end
-                if ~isfield(AM.(eng{l}{en}), fre{l}{fr})
-                    AM.(eng{l}{en}).(fre{l}{fr}) = 1;
-                end
+                AM.(eng{l}{en}).(fre{l}{fr}) = 1;
             end
         end
     end
 
+    % Normalize the count with the prob in the sentence
     en_words = fieldnames(AM);
     for en = 1:length(en_words)
         fr_words = fieldnames(AM.(en_words{en}));
