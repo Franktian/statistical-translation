@@ -134,11 +134,12 @@ function t = em_step(t, eng, fre)
 %
 	tcount = struct();
     total = struct();
-    
+
     for l=1:length(eng)
         uni_en = unique(eng{l});
         uni_fr = unique(fre{l});
 
+        % for each unique word f in F:
         for fr=1:length(uni_fr)
             denom_c = 0;
             
@@ -146,12 +147,16 @@ function t = em_step(t, eng, fre)
             if strcmp(uni_fr{fr}, 'SENTEND') || strcmp(uni_fr{fr}, 'SENTSTART')
                 continue;
             end
+
+            % for each unique word e in E:
             for en = 1:length(uni_en)
                 if strcmp(uni_en{en}, 'SENTEND') || strcmp(uni_en{en}, 'SENTSTART')
                     continue;
                 end
+                % denom_c += P(f|e) * F.count(f)
                 denom_c = denom_c + t.(uni_en{en}).(uni_fr{fr}) * sum(strcmp(fre{l}, uni_fr{fr}));
             end
+            % for each unique word e in E:
             for en = 1:length(uni_en)
                 if strcmp(uni_en{en}, 'SENTEND') || strcmp(uni_en{en}, 'SENTSTART')
                     continue;
@@ -165,24 +170,29 @@ function t = em_step(t, eng, fre)
                 if ~isfield(tcount.(uni_fr{fr}), uni_en{en})
 					tcount.(uni_fr{fr}).(uni_en{en}) = 0;
                 end
-				
+
                 p_fe = t.(uni_en{en}).(uni_fr{fr});
                 fcount = sum(strcmp(fre{l},uni_fr{fr}));
                 ecount = sum(strcmp(eng{l},uni_en{en}));
 
 				x = p_fe * fcount * ecount / denom_c;
 
+                % tcount(f, e) += P(f|e) * F.count(f) * E.count(e) / denom_c
 				tcount.(uni_fr{fr}).(uni_en{en}) = tcount.(uni_fr{fr}).(uni_en{en}) + x;
+                % total(e) += P(f|e) * F.count(f) * E.count(e) / denom_c   
 				total.(uni_en{en}) = total.(uni_en{en}) + x;
             end
         end    
     end
 
     en_words = fieldnames(t);
-    for en = 1:length(en_words)
-        fr_words = fieldnames(t.(en_words{en}));
-        for fr = 1:length(fr_words)
-            t.(en_words{en}).(fr_words{fr}) = tcount.(fr_words{fr}).(en_words{en}) / total.(en_words{en});
+    % for each e in domain(total(:)):
+    for e = 1:length(en_words)
+        fr_words = fieldnames(t.(en_words{e}));
+        % for each f in domain(tcount(:,e)):
+        for f = 1:length(fr_words)
+            % P(f|e) = tcount(f, e) / total(e)
+            t.(en_words{e}).(fr_words{f}) = tcount.(fr_words{f}).(en_words{e}) / total.(en_words{e});
         end
     end
 end
