@@ -43,6 +43,9 @@ function AM = align_ibm1(trainDir, numSentences, maxIter, fn_AM)
   for iter=1:maxIter,
     AM = em_step(AM, eng, fre);
   end
+  
+  AM.SENTSTART.SENTSTART = 1;
+  AM.SENTEND.SENTEND = 1;
 
   % Save the alignment model
   save( fn_AM, 'AM', '-mat'); 
@@ -110,8 +113,8 @@ function AM = initialize(eng, fre)
     % For every english word in a sentence align the french word in the
     % corresponding sentence
     for l=1:length(eng)
-        for en = 2:length(eng{l}) -1
-            for fr = 2:length(fre{l}) -1
+        for en = 2:length(eng{l}) - 1
+            for fr = 2:length(fre{l}) - 1
                 AM.(eng{l}{en}).(fre{l}{fr}) = 1;
             end
         end
@@ -136,6 +139,7 @@ function t = em_step(t, eng, fre)
     total = struct();
 
     for l=1:length(eng)
+        disp(eng{l});
         uni_en = unique(eng{l});
         uni_fr = unique(fre{l});
 
