@@ -30,12 +30,12 @@ function AM = align_ibm1(trainDir, numSentences, maxIter, fn_AM)
 % Template (c) 2011 Jackie C.K. Cheung and Frank Rudzicz
   
   global CSC401_A2_DEFNS
-  
+
   AM = struct();
-  
+
   % Read in the training data
   [eng, fre] = read_hansard(trainDir, numSentences);
-  
+
   % Initialize AM uniformly 
   AM = initialize(eng, fre);
 
@@ -73,23 +73,27 @@ function [eng, fre] = read_hansard(mydir, numSentences)
   eng = {};
   fre = {};
 
+  % Setup folders to read data
   DE = dir( [ mydir, filesep, '*', 'e'] );
   DF = dir( [ mydir, filesep, '*', 'f'] );
 
-  countl = 1;
   for iFile=1:length(DE)
-    englines = textread([mydir, filesep, DE(iFile).name], '%s','delimiter','\n');
-    frelines = textread([mydir, filesep, DF(iFile).name], '%s','delimiter','\n');
-    for l=1:length(englines)
-        eng{l} = strsplit(' ', preprocess(englines{l}, 'e'));
-        fre{l} = strsplit(' ', preprocess(frelines{l}, 'f'));
-        countl = countl + 1;
-        if countl > numSentences
-            return
-        end
-    end
-  end
+        % Read in english and french sentences, note there is a one-to-one
+        % relationship
+        englines = textread([mydir, filesep, DE(iFile).name], '%s','delimiter','\n');
+        frelines = textread([mydir, filesep, DF(iFile).name], '%s','delimiter','\n');
 
+        for l=1:length(englines)
+            eng{l} = strsplit(' ', preprocess(englines{l}, 'e'));
+            fre{l} = strsplit(' ', preprocess(frelines{l}, 'f'));
+
+            % Count on the lines read in already, if greater than
+            % numSentences, then return
+            if l >= numSentences
+                return
+            end
+        end
+  end
 end
 
 
@@ -130,7 +134,6 @@ function t = em_step(t, eng, fre)
     total = struct();
     
     for l=1:length(eng)
-        disp(eng{l});
         uni_en = unique(eng{l});
         uni_fr = unique(fre{l});
         uni_fr = uni_fr(~strcmp(uni_fr(:), 'SENTEND') & ~strcmp(uni_fr(:), 'SENTSTART'));
