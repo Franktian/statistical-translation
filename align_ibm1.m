@@ -35,7 +35,7 @@ function AM = align_ibm1(trainDir, numSentences, maxIter, fn_AM)
   
   % Read in the training data
   [eng, fre] = read_hansard(trainDir, numSentences);
-
+  
   % Initialize AM uniformly 
   AM = initialize(eng, fre);
 
@@ -79,13 +79,15 @@ function [eng, fre] = read_hansard(mydir, numSentences)
   DE = dir( [ mydir, filesep, '*', 'e'] );
   DF = dir( [ mydir, filesep, '*', 'f'] );
   
+  countl = 1;
   for iFile=1:length(DE)
     englines = textread([mydir, filesep, DE(iFile).name], '%s','delimiter','\n');
     frelines = textread([mydir, filesep, DF(iFile).name], '%s','delimiter','\n');
     for l=1:length(englines)
         eng{l} = strsplit(' ', preprocess(englines{l}, 'e'));
         fre{l} = strsplit(' ', preprocess(frelines{l}, 'e'));
-        if l > numSentences
+        countl = countl + 1;
+        if countl > numSentences
             return
         end
     end
@@ -131,25 +133,31 @@ function t = em_step(t, eng, fre)
     % get unique english word and french word
 	tcount = struct();
     total = struct();
+%     disp(length(eng));
+%     disp(length(fre));
     
     for l=1:length(eng)
         uni_en = unique(eng{l});
         uni_fr = unique(fre{l});
+        uni_fr = uni_fr(~strcmp(uni_fr(:), 'SENTEND') & ~strcmp(uni_fr(:), 'SENTSTART'));
+		uni_en = uni_en(~strcmp(uni_en(:), 'SENTEND') & ~strcmp(uni_en(:), 'SENTSTART'));
+        
+        
         for fr=1:length(uni_fr)
-            if (strcmp(uni_fr{fr}, 'SENTSTART') || strcmp(uni_fr{fr}, 'SENTEND'))
-                continue
-            end
+%             if (strcmp(uni_fr{fr}, 'SENTSTART') || strcmp(uni_fr{fr}, 'SENTEND'))
+%                 continue
+%             end
             denom_c = 0;
             for en = 1:length(uni_en)
-                if (strcmp(uni_en{en}, 'SENTSTART') || strcmp(uni_en{en}, 'SENTEND'))
-                    continue
-                end
+%                 if (strcmp(uni_en{en}, 'SENTSTART') || strcmp(uni_en{en}, 'SENTEND'))
+%                     continue
+%                 end
                 denom_c = denom_c + t.(uni_en{en}).(uni_fr{fr}) * sum(strcmp(fre{l}, uni_fr{fr}));
             end
             for en = 1:length(uni_en)
-                if (strcmp(uni_en{en}, 'SENTSTART') || strcmp(uni_en{en}, 'SENTEND'))
-                    continue
-                end
+%                 if (strcmp(uni_en{en}, 'SENTSTART') || strcmp(uni_en{en}, 'SENTEND'))
+%                     continue
+%                 end
                 if ~isfield(tcount, uni_fr{fr})
 					tcount.(uni_fr{fr}) = struct();
                 end
@@ -169,17 +177,15 @@ function t = em_step(t, eng, fre)
 				tcount.(uni_fr{fr}).(uni_en{en}) = tcount.(uni_fr{fr}).(uni_en{en}) + x;
 				total.(uni_en{en}) = total.(uni_en{en}) + x;
             end
-        end
-        
-        en_words = fieldnames(t);
-        for en = 1:length(en_words)
-            fr_words = fieldnames(t.(en_words{en}));
-            for fr = 1:length(fr_words)
-                t.(en_words{en}).(fr_words{fr}) = tcount.(fr_words{fr}).(en_words{en}) / total.(en_words{en});
-            end
+        end    
+    end
+
+    en_words = fieldnames(t);
+    for en = 1:length(en_words)
+        fr_words = fieldnames(t.(en_words{en}));
+        for fr = 1:length(fr_words)
+            t.(en_words{en}).(fr_words{fr}) = tcount.(fr_words{fr}).(en_words{en}) / total.(en_words{en});
         end
     end
-    
 end
-
 
