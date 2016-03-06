@@ -76,6 +76,8 @@ function [eng, fre] = read_hansard(mydir, numSentences)
   % Setup folders to read data
   DE = dir( [ mydir, filesep, '*', 'e'] );
   DF = dir( [ mydir, filesep, '*', 'f'] );
+  
+  lines_read = 1;
 
   for iFile=1:length(DE)
         % Read in english and french sentences, note there is a one-to-one
@@ -89,7 +91,8 @@ function [eng, fre] = read_hansard(mydir, numSentences)
 
             % Count on the lines read in already, if greater than
             % numSentences, then return
-            if l >= numSentences
+            lines_read = lines_read + 1;
+            if lines_read > numSentences
                 return
             end
         end
@@ -135,15 +138,24 @@ function t = em_step(t, eng, fre)
     for l=1:length(eng)
         uni_en = unique(eng{l});
         uni_fr = unique(fre{l});
-        uni_fr = uni_fr(~strcmp(uni_fr(:), 'SENTEND') & ~strcmp(uni_fr(:), 'SENTSTART'));
-		uni_en = uni_en(~strcmp(uni_en(:), 'SENTEND') & ~strcmp(uni_en(:), 'SENTSTART'));
 
         for fr=1:length(uni_fr)
             denom_c = 0;
+            
+            % Ignore sentence marks
+            if strcmp(uni_fr{fr}, 'SENTEND') || strcmp(uni_fr{fr}, 'SENTSTART')
+                continue;
+            end
             for en = 1:length(uni_en)
+                if strcmp(uni_en{en}, 'SENTEND') || strcmp(uni_en{en}, 'SENTSTART')
+                    continue;
+                end
                 denom_c = denom_c + t.(uni_en{en}).(uni_fr{fr}) * sum(strcmp(fre{l}, uni_fr{fr}));
             end
             for en = 1:length(uni_en)
+                if strcmp(uni_en{en}, 'SENTEND') || strcmp(uni_en{en}, 'SENTSTART')
+                    continue;
+                end
                 if ~isfield(tcount, uni_fr{fr})
 					tcount.(uni_fr{fr}) = struct();
                 end
@@ -157,7 +169,7 @@ function t = em_step(t, eng, fre)
                 p_fe = t.(uni_en{en}).(uni_fr{fr});
                 fcount = sum(strcmp(fre{l},uni_fr{fr}));
                 ecount = sum(strcmp(eng{l},uni_en{en}));
-                
+
 				x = p_fe * fcount * ecount / denom_c;
 
 				tcount.(uni_fr{fr}).(uni_en{en}) = tcount.(uni_fr{fr}).(uni_en{en}) + x;
