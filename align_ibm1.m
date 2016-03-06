@@ -85,7 +85,7 @@ function [eng, fre] = read_hansard(mydir, numSentences)
     frelines = textread([mydir, filesep, DF(iFile).name], '%s','delimiter','\n');
     for l=1:length(englines)
         eng{l} = strsplit(' ', preprocess(englines{l}, 'e'));
-        fre{l} = strsplit(' ', preprocess(frelines{l}, 'e'));
+        fre{l} = strsplit(' ', preprocess(frelines{l}, 'f'));
         countl = countl + 1;
         if countl > numSentences
             return
@@ -183,7 +183,12 @@ function t = em_step(t, eng, fre)
     en_words = fieldnames(t);
     for en = 1:length(en_words)
         fr_words = fieldnames(t.(en_words{en}));
+        disp(length(fr_words));
+        disp(fr_words);
         for fr = 1:length(fr_words)
+            %disp(fr_words{fr});
+            %disp(tcount.(fr_words{fr}).(en_words{en}));
+            %disp(total.(en_words{en}));
             t.(en_words{en}).(fr_words{fr}) = tcount.(fr_words{fr}).(en_words{en}) / total.(en_words{en});
         end
     end
