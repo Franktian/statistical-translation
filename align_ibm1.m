@@ -128,8 +128,58 @@ function t = em_step(t, eng, fre)
 % 
 % One step in the EM algorithm.
 %
-  
-  % TODO: your code goes here
+    % get unique english word and french word
+	tcount = struct();
+    total = struct();
+    
+    for l=1:length(eng)
+        uni_en = unique(eng{l});
+        uni_fr = unique(fre{l});
+        for fr=1:length(uni_fr)
+            if (strcmp(uni_fr{fr}, 'SENTSTART') || strcmp(uni_fr{fr}, 'SENTEND'))
+                continue
+            end
+            denom_c = 0;
+            for en = 1:length(uni_en)
+                if (strcmp(uni_en{en}, 'SENTSTART') || strcmp(uni_en{en}, 'SENTEND'))
+                    continue
+                end
+                denom_c = denom_c + t.(uni_en{en}).(uni_fr{fr}) * sum(strcmp(fre{l}, uni_fr{fr}));
+            end
+            for en = 1:length(uni_en)
+                if (strcmp(uni_en{en}, 'SENTSTART') || strcmp(uni_en{en}, 'SENTEND'))
+                    continue
+                end
+                if ~isfield(tcount, uni_fr{fr})
+					tcount.(uni_fr{fr}) = struct();
+                end
+                if ~isfield(total, uni_en{en})
+					total.(uni_en{en}) = 0;
+                end
+                if ~isfield(tcount.(uni_fr{fr}), uni_en{en})
+					tcount.(uni_fr{fr}).(uni_en{en}) = 0;
+                end
+				
+                p_fe = t.(uni_en{en}).(uni_fr{fr});
+                fcount = sum(strcmp(fre{l},uni_fr{fr}));
+                ecount = sum(strcmp(eng{l},uni_en{en}));
+                
+				x = p_fe * fcount * ecount / denom_c;
+
+				tcount.(uni_fr{fr}).(uni_en{en}) = tcount.(uni_fr{fr}).(uni_en{en}) + x;
+				total.(uni_en{en}) = total.(uni_en{en}) + x;
+            end
+        end
+        
+        en_words = fieldnames(t);
+        for en = 1:length(en_words)
+            fr_words = fieldnames(t.(en_words{en}));
+            for fr = 1:length(fr_words)
+                t.(en_words{en}).(fr_words{fr}) = tcount.(fr_words{fr}).(en_words{en}) / total.(en_words{en});
+            end
+        end
+    end
+    
 end
 
 
