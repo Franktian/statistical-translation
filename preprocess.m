@@ -49,10 +49,12 @@ function out = separatePunctuation(in)
   % and quotation marks.
 
   sen_final_punc = '[?.!]+ SENTEND';
-  sen_punc = '[";-=+{}[](),./*^<>]';
+  sen_punc = '[":;{}[](),.<>]';
+  symbol = '[=+-/*^]';
 
   out = regexprep(in, sen_final_punc, ' $0');
   out = regexprep(out, sen_punc, ' $0 ');
+  out = regexprep(out, symbol, ' $0 ');
 
 function out = updateFrench(in)
   f_replace = '$1$2 $3';
