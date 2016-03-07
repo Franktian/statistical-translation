@@ -33,9 +33,7 @@ function outSentence = preprocess( inSentence, language )
 
   switch language
    case 'e'
-    e_replace = '$1 $2$3';
-    % Separating possessives and clitics, same rules as A1
-    outSentence = regexprep(outSentence, '(.*?[^ ])(''|''s|''m|''ll|''ve|''re)( .*?)', e_replace);
+    outSentence = regexprep(outSentence, '''', ' ''');
    case 'f'
     outSentence = updateFrench(outSentence);
   end
@@ -48,14 +46,12 @@ function out = separatePunctuation(in)
   % Separate sentence-final punctuation, commas, colons and semicolons,
   % parentheses, dashes between parentheses, mathematical operators,
   % and quotation marks.
-  replace = '$1 $2 $3';
-  sen_final_punc = '([*]?)([?.!]+) (SENTEND)';
-  sen_punc = '([*]?)([;=-+\(\)<>,;:])([*]?)';
-  dashes = '([*]?\([*]?)(-)([*]?\)[*]?)';
 
-  out = regexprep(in, sen_final_punc, replace);
-  out = regexprep(out, sen_punc, replace);
-  out = regexprep(out, dashes, replace);
+  sen_final_punc = '[?.!]+ SENTEND';
+  sen_punc = '[";-=+{}[](),./*^<>]';
+
+  out = regexprep(in, sen_final_punc, ' $0');
+  out = regexprep(out, sen_punc, ' $0 ');
 
 function out = updateFrench(in)
   f_replace = '$1$2 $3';
