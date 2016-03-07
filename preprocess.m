@@ -38,8 +38,9 @@ function outSentence = preprocess( inSentence, language )
     outSentence = updateFrench(outSentence);
   end
 
-  % change unpleasant characters to codes that can be keys in dictionaries
+  % Set all multiple white spaces to single one
   outSentence = regexprep(outSentence, '[ ]+', ' ');
+  % change unpleasant characters to codes that can be keys in dictionaries
   outSentence = convertSymbols( outSentence );
 
 function out = separatePunctuation(in)
