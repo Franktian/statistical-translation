@@ -41,14 +41,15 @@ google_sens = textread(task5_g, '%s', 'delimiter', '\n');
 for l=1:length(french_sens)
     disp('*****************');
     disp(french_sens{l});
-    %f = preprocess(french_sens{l}, 'f');
-    %e = decode(f, LM, AM, '');
-    disp(english_sens{l});
-    disp(google_sens{l});
+    f = preprocess(french_sens{l}, 'f');
+    e = decode(f, LM, AM, '');
+    disp(strjoin(e));
+    %disp(english_sens{l});
+    %disp(google_sens{l});
 end
 
 
 % TODO: perform some analysis
 % add BlueMix code here 
-
-%[status, result] = unix('')
+%disp('Evaluate blue mix');
+%[status, result] = unix('curl -u 6aaea5e9-df0e-4a9b-aefd-aecb761781db:WTceKuyFlVeu -X POST -F "text=Honorables membres du Senat, membres de la Chambre des communes" -F "source=fr" -F "target=en" "https://gateway.watsonplatform.net/language-translation/api/v2/translate"https://gateway.watsonplatform.net/language-translation/api')
