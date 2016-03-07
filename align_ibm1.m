@@ -40,10 +40,10 @@ function AM = align_ibm1(trainDir, numSentences, maxIter, fn_AM)
   AM = initialize(eng, fre);
 
   % Iterate between E and M steps
-  for iter=1:maxIter,
-    AM = em_step(AM, eng, fre);
-  end
-  
+  %for iter=1:maxIter,
+  %  AM = em_step(AM, eng, fre);
+  %end
+
   AM.SENTSTART.SENTSTART = 1;
   AM.SENTEND.SENTEND = 1;
 
@@ -89,8 +89,8 @@ function [eng, fre] = read_hansard(mydir, numSentences)
         frelines = textread([mydir, filesep, DF(iFile).name], '%s','delimiter','\n');
 
         for l=1:length(englines)
-            eng{l} = strsplit(' ', preprocess(englines{l}, 'e'));
-            fre{l} = strsplit(' ', preprocess(frelines{l}, 'f'));
+            eng{lines_read} = strsplit(' ', preprocess(englines{l}, 'e'));
+            fre{lines_read} = strsplit(' ', preprocess(frelines{l}, 'f'));
 
             % Count on the lines read in already, if greater than
             % numSentences, then return
@@ -112,7 +112,9 @@ function AM = initialize(eng, fre)
 
     % For every english word in a sentence align the french word in the
     % corresponding sentence
+    disp(length(eng));
     for l=1:length(eng)
+        %disp(eng{l});
         for en = 2:length(eng{l}) - 1
             for fr = 2:length(fre{l}) - 1
                 AM.(eng{l}{en}).(fre{l}{fr}) = 1;
