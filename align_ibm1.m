@@ -114,7 +114,7 @@ function AM = initialize(eng, fre)
     % corresponding sentence
     disp(length(eng));
     for l=1:length(eng)
-        %disp(eng{l});
+        disp(eng{l});
         for en = 2:length(eng{l}) - 1
             for fr = 2:length(fre{l}) - 1
                 AM.(eng{l}{en}).(fre{l}{fr}) = 1;
@@ -126,8 +126,12 @@ function AM = initialize(eng, fre)
     en_words = fieldnames(AM);
     for en = 1:length(en_words)
         fr_words = fieldnames(AM.(en_words{en}));
+
+        % Assign a temporary value for performance concern
+        prob = 1 / length(fields(AM.(en_words{en})));
+
         for fr = 1:length(fr_words)
-            AM.(en_words{en}).(fr_words{fr}) = 1 / length(fields(AM.(en_words{en})));
+            AM.(en_words{en}).(fr_words{fr}) = prob;
         end
     end
 
