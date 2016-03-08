@@ -38,15 +38,31 @@ french_sens = textread(task5_f, '%s', 'delimiter', '\n');
 english_sens = textread(task5_e, '%s', 'delimiter', '\n');
 google_sens = textread(task5_g, '%s', 'delimiter', '\n');
 
+unix_pre = 'env LD_LIBRARY_PATH='''' curl -u 6aaea5e9-df0e-4a9b-aefd-aecb761781db:WTceKuyFlVeu -X POST -F "text=';
+unix_post = '" -F "source=fr" -F "target=en" https://gateway.watsonplatform.net/language-translation/api/v2/translate';
+
 % Decode the test sentence 'fre'
 for l=1:length(french_sens)
-    f = preprocess(french_sens{l}, 'f');
-    e = decode2(f, LM, AM, 'smooth', delta, vocabSize);
-    disp(e);
+    original = french_sens{l};
+
+    f = preprocess(original, 'f');
+    %model_trans = decode2(f, LM, AM, 'smooth', delta, vocabSize);
+    command = strjoin({unix_pre, french_sens{l}, unix_post});
+
+    [status, bluemix_trans] = unix(command);
+    google_trans = google_sens{l};
+    ref_trans = english_sens{l};
+
+    % TODO: Add BLEU score
+    disp(bluemix_trans);
 end
 
 
 % TODO: perform some analysis
 % add BlueMix code here 
 %disp('Evaluate blue mix');
-%[status, result] = unix('curl -u 6aaea5e9-df0e-4a9b-aefd-aecb761781db:WTceKuyFlVeu -X POST -F "text=Honorables membres du Senat, membres de la Chambre des communes" -F "source=fr" -F "target=en" "https://gateway.watsonplatform.net/language-translation/api/v2/translate"https://gateway.watsonplatform.net/language-translation/api')
+% unix_pre = 'env LD_LIBRARY_PATH='''' curl -u 6aaea5e9-df0e-4a9b-aefd-aecb761781db:WTceKuyFlVeu -X POST -F "text=';
+% french = 'Dans le monde reel, il n''y a rien de mal a cela.';
+% unix_post = '" -F "source=fr" -F "target=en" https://gateway.watsonplatform.net/language-translation/api/v2/translate';
+% command = strjoin({unix_pre, french, unix_post});
+%[status, result] = unix('env LD_LIBRARY_PATH='''' curl -u 6aaea5e9-df0e-4a9b-aefd-aecb761781db:WTceKuyFlVeu -X POST -F "text=Dans le monde reel, il n''y a rien de mal a cela." -F "source=fr" -F "target=en" https://gateway.watsonplatform.net/language-translation/api/v2/translate')
