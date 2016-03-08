@@ -9,12 +9,12 @@ trainDir     = '/u/cs401/A2_SMT/data/Hansard/Training/';
 testDir      = '/u/cs401/A2_SMT/data/Hansard/Testing/';
 fn_LME       = 'ngram_eng';
 fn_LMF       = 'ngram_fre';
-fn_AM        = 'am10K';
+fn_AM        = 'am1k';
 lm_type      = '';
-% delta        = TODO;
+delta        = 0.5;
 % vocabSize    = TODO; 
 numSentences = 30000;
-maxIt = 20;
+maxIt = 10;
 task5_f = '/u/cs401/A2_SMT/data/Hansard/Testing/Task5.f';
 task5_e = '/u/cs401/A2_SMT/data/Hansard/Testing/Task5.e';
 task5_g = '/u/cs401/A2_SMT/data/Hansard/Testing/Task5.google.e';
@@ -28,6 +28,7 @@ load(fn_LME, '-mat', 'LM');
 % Train your alignment model of French, given English
 % AM = align_ibm1( trainDir, numSentences, maxIt, 'file');
 load(fn_AM, '-mat', 'AM');
+vocabSize = length(fieldnames(AM));
 
 % ... TODO: more 
 
@@ -39,13 +40,9 @@ google_sens = textread(task5_g, '%s', 'delimiter', '\n');
 
 % Decode the test sentence 'fre'
 for l=1:length(french_sens)
-    %disp('*****************');
-    %disp(french_sens{l});
     f = preprocess(french_sens{l}, 'f');
-    e = decode2(f, LM, AM, 'smooth', 0.5, length(fieldnames(AM)));
+    e = decode2(f, LM, AM, 'smooth', delta, vocabSize);
     disp(e);
-    %disp(english_sens{l});
-    %disp(google_sens{l});
 end
 
 
