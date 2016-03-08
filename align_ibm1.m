@@ -192,31 +192,21 @@ function t = em_step(t, eng, fre)
                 % total(e) += P(f|e) * F.count(f) * E.count(e) / denom_c   
 				total.(uni_en{en}) = total.(uni_en{en}) + x;
             end
-        end    
+        end
     end
 
-%     en_words = fieldnames(t);
-%     % for each e in domain(total(:)):
-%     for e = 1:length(en_words)
-%         fr_words = fieldnames(t.(en_words{e}));
-%         % for each f in domain(tcount(:,e)):
-%         for f = 1:length(fr_words)
-%             % P(f|e) = tcount(f, e) / total(e)
-%             t.(en_words{e}).(fr_words{f}) = tcount.(en_words{e}).(fr_words{f}) / total.(en_words{e});
-%         end
-%     end
-    allEnglishWords = fieldnames(total);
+    totalFields = fieldnames(total);
+    % for each e in domain(total(:))
+	for en = 1: length(totalFields)
 
-	for engWordIndex = 1: length(allEnglishWords)
-        disp('with the pseudo');
-		englishWord = allEnglishWords{engWordIndex};
-		allFrenchWords = fieldnames(tcount.(englishWord));
+		ew = totalFields{en};
+		tcountFields = fieldnames(tcount.(ew));
+        % for each f in domain(tcount(:,e)):
+        for fr = 1: length(tcountFields)
+			fw = tcountFields{fr};
+            % P(f|e) = tcount(f, e) / total(e)
+			t.(ew).(fw) = tcount.(ew).(fw)/total.(ew);
 
-		for freWordIndex = 1: length(allFrenchWords)
-			frenchWord = allFrenchWords{freWordIndex};
-			t.(englishWord).(frenchWord) = tcount.(englishWord).(frenchWord)/total.(englishWord);
-
-		end
-
+        end
 	end
 end

@@ -70,6 +70,10 @@ AM = rmfield(AM, CSC401_A2_DEFNS.SENTEND );
 VE = fieldnames(AM);
 AM.(CSC401_A2_DEFNS.SENTSTART ) = SS;
 AM.(CSC401_A2_DEFNS.SENTEND ) = SE;
+disp(SS);
+disp(SE);
+disp(AM.SENTSTART);
+disp(AM.SENTEND)
 
 MX = 0;
 for iew=1:length(VE)

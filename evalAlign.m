@@ -9,7 +9,7 @@ trainDir     = '/u/cs401/A2_SMT/data/Hansard/Training/';
 testDir      = '/u/cs401/A2_SMT/data/Hansard/Testing/';
 fn_LME       = 'ngram_eng';
 fn_LMF       = 'ngram_fre';
-fn_AM        = 'am30k';
+fn_AM        = 'am10K';
 lm_type      = '';
 % delta        = TODO;
 % vocabSize    = TODO; 
@@ -39,11 +39,11 @@ google_sens = textread(task5_g, '%s', 'delimiter', '\n');
 
 % Decode the test sentence 'fre'
 for l=1:length(french_sens)
-    disp('*****************');
-    disp(french_sens{l});
+    %disp('*****************');
+    %disp(french_sens{l});
     f = preprocess(french_sens{l}, 'f');
-    e = decode(f, LM, AM, '');
-    disp(strjoin(e));
+    e = decode2(f, LM, AM, 'smooth', 0.5, length(fieldnames(AM)));
+    disp(e);
     %disp(english_sens{l});
     %disp(google_sens{l});
 end
