@@ -171,14 +171,14 @@ function t = em_step(t, eng, fre)
                 if strcmp(uni_en{en}, 'SENTEND') || strcmp(uni_en{en}, 'SENTSTART')
                     continue;
                 end
-                if ~isfield(tcount, uni_fr{fr})
-					tcount.(uni_fr{fr}) = struct();
+                if ~isfield(tcount, uni_en{en})
+					tcount.(uni_en{en}) = struct();
                 end
                 if ~isfield(total, uni_en{en})
 					total.(uni_en{en}) = 0;
                 end
-                if ~isfield(tcount.(uni_fr{fr}), uni_en{en})
-					tcount.(uni_fr{fr}).(uni_en{en}) = 0;
+                if ~isfield(tcount.(uni_en{en}), uni_fr{fr})
+					tcount.(uni_en{en}).(uni_fr{fr}) = 0;
                 end
 
                 p_fe = t.(uni_en{en}).(uni_fr{fr});
@@ -188,21 +188,35 @@ function t = em_step(t, eng, fre)
 				x = p_fe * fcount * ecount / denom_c;
 
                 % tcount(f, e) += P(f|e) * F.count(f) * E.count(e) / denom_c
-				tcount.(uni_fr{fr}).(uni_en{en}) = tcount.(uni_fr{fr}).(uni_en{en}) + x;
+				tcount.(uni_en{en}).(uni_fr{fr}) = tcount.(uni_en{en}).(uni_fr{fr}) + x;
                 % total(e) += P(f|e) * F.count(f) * E.count(e) / denom_c   
 				total.(uni_en{en}) = total.(uni_en{en}) + x;
             end
         end    
     end
 
-    en_words = fieldnames(t);
-    % for each e in domain(total(:)):
-    for e = 1:length(en_words)
-        fr_words = fieldnames(t.(en_words{e}));
-        % for each f in domain(tcount(:,e)):
-        for f = 1:length(fr_words)
-            % P(f|e) = tcount(f, e) / total(e)
-            t.(en_words{e}).(fr_words{f}) = tcount.(fr_words{f}).(en_words{e}) / total.(en_words{e});
-        end
-    end
+%     en_words = fieldnames(t);
+%     % for each e in domain(total(:)):
+%     for e = 1:length(en_words)
+%         fr_words = fieldnames(t.(en_words{e}));
+%         % for each f in domain(tcount(:,e)):
+%         for f = 1:length(fr_words)
+%             % P(f|e) = tcount(f, e) / total(e)
+%             t.(en_words{e}).(fr_words{f}) = tcount.(en_words{e}).(fr_words{f}) / total.(en_words{e});
+%         end
+%     end
+    allEnglishWords = fieldnames(total);
+
+	for engWordIndex = 1: length(allEnglishWords)
+        disp('with the pseudo');
+		englishWord = allEnglishWords{engWordIndex};
+		allFrenchWords = fieldnames(tcount.(englishWord));
+
+		for freWordIndex = 1: length(allFrenchWords)
+			frenchWord = allFrenchWords{freWordIndex};
+			t.(englishWord).(frenchWord) = tcount.(englishWord).(frenchWord)/total.(englishWord);
+
+		end
+
+	end
 end
