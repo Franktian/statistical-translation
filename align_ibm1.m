@@ -28,7 +28,7 @@ function AM = align_ibm1(trainDir, numSentences, maxIter, fn_AM)
 %       e.g., LM.house.maison = 0.5       % TODO
 % 
 % Template (c) 2011 Jackie C.K. Cheung and Frank Rudzicz
-  
+
   global CSC401_A2_DEFNS
 
   AM = struct();
