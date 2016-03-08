@@ -46,7 +46,7 @@ for l=1:length(french_sens)
     original = french_sens{l};
 
     f = preprocess(original, 'f');
-    %model_trans = decode2(f, LM, AM, 'smooth', delta, vocabSize);
+    model_trans = decode2(f, LM, AM, 'smooth', delta, vocabSize);
     command = strjoin({unix_pre, french_sens{l}, unix_post});
 
     [status, bluemix_trans] = unix(command);
@@ -54,9 +54,12 @@ for l=1:length(french_sens)
     ref_trans = english_sens{l};
 
     % TODO: Add BLEU score
-    disp(bluemix_trans);
-end
+    
+    refs = {preprocess(google_trans, 'e'), preprocess(ref_trans, 'e'), preprocess(bluemix_trans, 'e')};
 
+    % Calculate BLEU score
+    bleu = bleu_score(model_trans, refs, 3);
+end
 
 % TODO: perform some analysis
 % add BlueMix code here 
