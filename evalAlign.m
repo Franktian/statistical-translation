@@ -38,6 +38,7 @@ french_sens = textread(task5_f, '%s', 'delimiter', '\n');
 english_sens = textread(task5_e, '%s', 'delimiter', '\n');
 google_sens = textread(task5_g, '%s', 'delimiter', '\n');
 
+% Helper string to get BlueMix translation
 unix_pre = 'env LD_LIBRARY_PATH='''' curl -u 6aaea5e9-df0e-4a9b-aefd-aecb761781db:WTceKuyFlVeu -X POST -F "text=';
 unix_post = '" -F "source=fr" -F "target=en" https://gateway.watsonplatform.net/language-translation/api/v2/translate';
 
@@ -52,10 +53,13 @@ for l=1:length(french_sens)
     [status, bluemix_trans] = unix(command);
     google_trans = google_sens{l};
     ref_trans = english_sens{l};
-
-    % TODO: Add BLEU score
     
-    refs = {preprocess(google_trans, 'e'), preprocess(ref_trans, 'e'), preprocess(bluemix_trans, 'e')};
+    % Preprocess the translation
+    google_trans = initialize_trans(google_trans);
+    ref_trans = initialize_trans(ref_trans);
+    bluemix_trans = initialize_trans(bluemix_trans);
+
+    refs = {google_trans, ref_trans, bluemix_trans};
 
     % Calculate BLEU score
     bleu = bleu_score(model_trans, refs, 3);
