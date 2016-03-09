@@ -9,10 +9,9 @@ trainDir     = '/u/cs401/A2_SMT/data/Hansard/Training/';
 testDir      = '/u/cs401/A2_SMT/data/Hansard/Testing/';
 fn_LME       = 'ngram_eng';
 fn_LMF       = 'ngram_fre';
-fn_AM        = 'am30k';
+%fn_AM        = 'am1k';
 lm_type      = '';
 delta        = 0.5;
-% vocabSize    = TODO; 
 numSentences = 30000;
 maxIt = 10;
 task5_f = '/u/cs401/A2_SMT/data/Hansard/Testing/Task5.f';
@@ -20,14 +19,14 @@ task5_e = '/u/cs401/A2_SMT/data/Hansard/Testing/Task5.e';
 task5_g = '/u/cs401/A2_SMT/data/Hansard/Testing/Task5.google.e';
 
 % Train your language models. This is task 2 which makes use of task 1
-% LME = lm_train( trainDir, 'e', fn_LME );
-% LMF = lm_train( trainDir, 'f', fn_LMF );
-% LM = LME;
-load(fn_LME, '-mat', 'LM');
+LME = lm_train( trainDir, 'e', fn_LME );
+LMF = lm_train( trainDir, 'f', fn_LMF );
+LM = LME;
+% load(fn_LME, '-mat', 'LM');
 
 % Train your alignment model of French, given English
-% AM = align_ibm1( trainDir, numSentences, maxIt, 'file');
-load(fn_AM, '-mat', 'AM');
+AM = align_ibm1( trainDir, numSentences, maxIt, 'file');
+% load(fn_AM, '-mat', 'AM');
 vocabSize = length(fieldnames(AM));
 
 % ... TODO: more 
@@ -53,23 +52,22 @@ for l=1:length(french_sens)
     [status, bluemix_trans] = unix(command);
     google_trans = google_sens{l};
     ref_trans = english_sens{l};
-    
+
     % Preprocess the translation
     google_trans = initialize_trans(google_trans);
     ref_trans = initialize_trans(ref_trans);
     bluemix_trans = initialize_trans(bluemix_trans);
+    
+    % Remove sentence marks for decoded translation
+    splitted_trans = strsplit(' ', model_trans);
+    splitted_trans(1) = [];
+    splitted_trans(end) = [];
+
+    %disp(strjoin(splitted_trans));
 
     refs = {google_trans, ref_trans, bluemix_trans};
 
     % Calculate BLEU score
-    bleu = bleu_score(model_trans, refs, 3);
+    bleu = bleu_score(splitted_trans, refs, 1);
+    disp(bleu);
 end
-
-% TODO: perform some analysis
-% add BlueMix code here 
-%disp('Evaluate blue mix');
-% unix_pre = 'env LD_LIBRARY_PATH='''' curl -u 6aaea5e9-df0e-4a9b-aefd-aecb761781db:WTceKuyFlVeu -X POST -F "text=';
-% french = 'Dans le monde reel, il n''y a rien de mal a cela.';
-% unix_post = '" -F "source=fr" -F "target=en" https://gateway.watsonplatform.net/language-translation/api/v2/translate';
-% command = strjoin({unix_pre, french, unix_post});
-%[status, result] = unix('env LD_LIBRARY_PATH='''' curl -u 6aaea5e9-df0e-4a9b-aefd-aecb761781db:WTceKuyFlVeu -X POST -F "text=Dans le monde reel, il n''y a rien de mal a cela." -F "source=fr" -F "target=en" https://gateway.watsonplatform.net/language-translation/api/v2/translate')

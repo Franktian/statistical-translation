@@ -1,0 +1,125 @@
+BLEU scores with 30K alignment model
+      n = 1     n = 2     n = 3
+1     0.6667    0.3086         0
+2     0.7143    0.3450         0
+3     0.6364    0.2523         0
+4     0.8333    0.7282    0.5964
+5     0.7273    0.4671         0
+6     0.8750    0.7071    0.5503
+7     0.7273    0.3814    0.2528
+8     1.0000    1.0000    1.0000
+9     0.8333    0.5774         0
+10    0.5000    0.4629    0.4149
+11    0.7273    0.4671    0.2894
+12    0.6667    0.2462         0
+13    0.4412         0         0
+14    0.7500    0.5477    0.4409
+15    0.9091    0.6742    0.3696
+16    0.7000    0.5578    0.4269
+17    0.7500    0.5669    0.3770
+18    0.7844    0.6263    0.5708
+19    0.6641    0.4265    0.3330
+20    0.6619    0.5003    0.4191
+21    0.8333    0.7071    0.6300
+22    0.7778    0.6236    0.3816
+23    0.8333    0.5505    0.3118
+24    0.6250    0.4564    0.2460
+25    0.5000    0.3162         0
+
+BLEU scores with 15K alignment model
+      n = 1     n  =2     n = 3
+1     0.6667    0.3086         0
+2     0.7143    0.3450         0
+3     0.6364    0.2523         0
+4     0.8333    0.7282    0.5964
+5     0.8182    0.4954         0
+6     0.8750    0.7071    0.5503
+7     0.7273    0.3814    0.2528
+8     0.8333    0.7071    0.6300
+9     0.8333    0.5774         0
+10    0.5000    0.4629    0.4149
+11    0.7273    0.4671    0.2894
+12    0.6667    0.2462         0
+13    0.3309         0         0
+14    0.7500    0.4472    0.3057
+15    0.9091    0.6742    0.3696
+16    0.7000    0.5578    0.4269
+17    0.6250    0.4226         0
+18    0.6798    0.5142    0.4279
+19    0.6641    0.4265    0.3330
+20    0.6619    0.5003    0.4191
+21    0.8333    0.7071    0.6300
+22    0.7778    0.6236    0.3816
+23    0.8333    0.5505    0.3118
+24    0.6875    0.4787    0.3199
+25    0.5000    0.3162         0
+
+
+BLEU scores with 10K alignment model
+      n = 1     n = 2     n = 3
+1     0.6000    0.2928         0
+2     0.7143    0.3450         0
+3     0.6364    0.2523         0
+4     0.8333    0.7282    0.5964
+5     0.8182    0.4954         0
+6     0.7500    0.6547    0.5228
+7     0.7273    0.3814    0.2528
+8     0.8333    0.7071    0.6300
+9     0.8333    0.5774         0
+10    0.3750    0.3273    0.2614
+11    0.8182    0.4954    0.3010
+12    0.5833    0.2303         0
+13    0.3309         0         0
+14    0.6875    0.4282    0.2970
+15    0.8182    0.5721    0.3313
+16    0.7000    0.5578    0.4269
+17    0.6250    0.4226         0
+18    0.6798    0.4761    0.3773
+19    0.6641    0.4265    0.3330
+20    0.6619    0.5003    0.4191
+21    1.0000    1.0000    1.0000
+22    0.7778    0.6236    0.3816
+23    0.8333    0.5505    0.3118
+24    0.6875    0.4787    0.3199
+25    0.5000    0.3162         0
+
+
+BLEU scores with 1K alignment model
+      n = 1     n = 2     n = 3
+1     0.4667    0.1826         0
+2     0.5714    0.3086         0
+3     0.5455         0         0
+4     0.7500    0.5222    0.3010
+5     0.6364    0.3568         0
+6     0.6250    0.5175    0.3547
+7     0.4545    0.2132         0
+8     0.6667    0.3651         0
+9     0.8333    0.5774         0
+10    0.3750         0         0
+11    0.8182    0.4954    0.3010
+12    0.4167         0         0
+13    0.2206         0         0
+14    0.6250    0.4082    0.2877
+15    0.6364    0.2523         0
+16    0.5000    0.2357         0
+17    0.6250    0.4226         0
+18    0.6275    0.4574    0.3674
+19    0.5811    0.3258         0
+20    0.4412         0         0
+21    0.6667    0.3651         0
+22    0.6667    0.4082         0
+23    0.7500    0.3693         0
+24    0.6250    0.4564    0.2460
+25    0.3333         0         0
+
+
+Analysis:
+In our evaluation we have used the decode2 function for translation, differs the model from 1K to 30K lines of sentences from the training data to create our alignment. We have put our observations as 4 different tables above showing BLEU scores with n = 1, 2, 3 with respect to the four alignment models. Note when we are calculating the BLEU scores, we have assume cap(*) = 2 when calculating the modified n-gram precision, allowing a maximum of 2 word of same type to be counted in.
+
+From what we have observed, the model with 30K training instances performs with the most decent scores among all models, however it is not at all that this model performs much better, in general 10K and 15K ones are just slightly worse than the 30K one in terms of BLEU scores. And not surprisingly the 1K model gives the worst BLEU score due to the huge training instance gap with all other models.
+
+And in terms of scores againt different ngrams, we observed that counting only unigram gives the best BLEU scores and score drops dramatically as n increases, and this applies to all four different alignment models, which suggests that using only unigram to get BLEU score will gives the best performance.
+
+In our evaluation procedure, we have adjusted the step to be manually updated such that a single pass can only evaluate one alignment model with a single value of n, if would like to see different combination the value of the training instrances(in the code it's numSentences) and n one would have to manually adjust the parameters. The default values we have put in evalAlign.m are n = 30000, matIter = 10 and n = 1, this is an evaluation with 30K  training instances for 10 iterations and evaluated against unigram only.
+
+This is an evaluation referenced the official translation, the auto translation from Google and autotranslation from IBM BlueMix.
